@@ -84,7 +84,9 @@ try:
     dropdown_locator.click()
     print('series clicked')
     time.sleep(.5)
-    option_locator = ((By.XPATH, "//li[contains(span/text(), 'J: TELLURIDE')]"))
+    option_locator =wait.until(
+        EC.presence_of_element_located((By.XPATH,"//li[@class='MuiButtonBase-root MuiMenuItem-root MuiMenuItem-gutters MuiMenuItem-root MuiMenuItem-gutters css-1i5c738' and @data-value='J']")))
+
     driver.execute_script("arguments[0].scrollIntoView();", option_locator)
 
     print('option found')
