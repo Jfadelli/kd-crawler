@@ -11,11 +11,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
-
-# set env var,
-user_name = os.environ.get("USER_NAME")
-password = os.environ.get("PASSWORD")
-
 #initialize web driver
 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
 
@@ -132,4 +127,4 @@ except:
     print('export failed')
 
 
-# driver.quit()
+driver.quit()
