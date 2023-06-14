@@ -68,40 +68,54 @@ try:
     year_selector_dropdown = wait.until(
         EC.presence_of_element_located((By.ID, 'year')))
     year_selector_dropdown.click()
+    time.sleep(.5)
     year_selection = wait.until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, 'li[data-value="2023"]')))
+        EC.presence_of_element_located((By.XPATH, '//li[@data-value="2023"]')))
     year_selection.click()
+    time.sleep(1)
     print('year selection success')
-    print('series selection begin')
+    
+    
     # -------------------------------------------------
-
-
-    def select_option_from_dropdown(driver, dropdown_locator, option_locator, option):
-        # Open the dropdown menu
-        dropdown_element = driver.find_element(*dropdown_locator)
-        dropdown_element.click()
-
-        # Scroll to the desired option
-        option_element = driver.find_element(*option_locator)
-        actions = ActionChains(driver)
-        actions.move_to_element(option_element)
-        actions.perform()
-
-        # Wait until the option is visible and clickable
-        wait = WebDriverWait(driver, 100)
-        wait.until(EC.visibility_of_element_located(option_locator))
-        wait.until(EC.element_to_be_clickable(option_locator))
-
-
-        # Select the option
-        option_locator.click()
-
-    # Define the locators for the dropdown and option elements
-    dropdown_locator = ((By.ID, 'series'))
+    print('series selection begin')
+    dropdown_locator = wait.until(
+        EC.presence_of_element_located((By.ID, 'series')))
+    print('series found')
+    dropdown_locator.click()
+    print('series clicked')
+    time.sleep(.5)
     option_locator = ((By.XPATH, "//li[contains(span/text(), 'J: TELLURIDE')]"))
+    driver.execute_script("arguments[0].scrollIntoView();", option_locator)
 
-    # Call the function to select the option from the dropdown
-    select_option_from_dropdown(driver, dropdown_locator, option_locator)
+    print('option found')
+    option_locator.click()
+    print('option clicked')
+    # def select_option_from_dropdown(driver, dropdown_locator, option_locator, option):
+    #     # Open the dropdown menu
+    #     dropdown_element = driver.find_element(*dropdown_locator)
+    #     dropdown_element.click()
+
+    #     # Scroll to the desired option
+    #     option_element = driver.find_element(*option_locator)
+    #     actions = ActionChains(driver)
+    #     actions.move_to_element(option_element)
+    #     actions.perform()
+
+    #     # Wait until the option is visible and clickable
+    #     wait = WebDriverWait(driver, 100)
+    #     wait.until(EC.visibility_of_element_located(option_locator))
+    #     wait.until(EC.element_to_be_clickable(option_locator))
+
+
+    #     # Select the option
+    #     option_locator.click()
+
+    # dropdown_locator = ((By.ID, 'series'))
+    # dropdown_locator.click()
+    # option_locator = ((By.XPATH, "//li[contains(span/text(), 'J: TELLURIDE')]"))
+
+    # # Call the function to select the option from the dropdown
+    # select_option_from_dropdown(driver, dropdown_locator, option_locator)
 
 
     show_more_button = wait.until(
