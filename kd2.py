@@ -36,7 +36,6 @@ current_url = driver.current_url
 def login(current_url, login_attempts):
     if 'b2clogin' in current_url:
         login_attempts += 1
-        print(login_attempts)
         try:
             username_input = wait.until(
                 EC.presence_of_element_located((By.ID, "signInName"))
@@ -58,13 +57,12 @@ def login(current_url, login_attempts):
         except:
             print('Login failed')
         
-        print('Login successful - proceed to vehicle locator')
-
 login(current_url, 0)
     
     # navigate to vehicle locator
 try:
     driver.get('https://www.kdealer.com/VehicleLocator')
+
     year_selector_dropdown = wait.until(
         EC.presence_of_element_located((By.ID, 'year')))
     year_selector_dropdown.click()
@@ -72,77 +70,66 @@ try:
     year_selection = wait.until(
         EC.presence_of_element_located((By.XPATH, '//li[@data-value="2023"]')))
     year_selection.click()
-    time.sleep(1)
-    print('year selection success')
-    
-    
-    # -------------------------------------------------
-    print('series selection begin')
-    dropdown_locator = wait.until(
+    time.sleep(1)    
+
+    series_dropdown_menu = wait.until(
         EC.presence_of_element_located((By.ID, 'series')))
-    print('series found')
-    dropdown_locator.click()
-    print('series clicked')
-    time.sleep(.5)
-    option_locator =wait.until(
+    series_dropdown_menu.click()
+    time.sleep(.2)
+    series_selection =wait.until(
         EC.presence_of_element_located((By.XPATH,"//li[@class='MuiButtonBase-root MuiMenuItem-root MuiMenuItem-gutters MuiMenuItem-root MuiMenuItem-gutters css-1i5c738' and @data-value='J']")))
-
-    driver.execute_script("arguments[0].scrollIntoView();", option_locator)
-
-    print('option found')
-    option_locator.click()
-    print('option clicked')
-    # def select_option_from_dropdown(driver, dropdown_locator, option_locator, option):
-    #     # Open the dropdown menu
-    #     dropdown_element = driver.find_element(*dropdown_locator)
-    #     dropdown_element.click()
-
-    #     # Scroll to the desired option
-    #     option_element = driver.find_element(*option_locator)
-    #     actions = ActionChains(driver)
-    #     actions.move_to_element(option_element)
-    #     actions.perform()
-
-    #     # Wait until the option is visible and clickable
-    #     wait = WebDriverWait(driver, 100)
-    #     wait.until(EC.visibility_of_element_located(option_locator))
-    #     wait.until(EC.element_to_be_clickable(option_locator))
-
-
-    #     # Select the option
-    #     option_locator.click()
-
-    # dropdown_locator = ((By.ID, 'series'))
-    # dropdown_locator.click()
-    # option_locator = ((By.XPATH, "//li[contains(span/text(), 'J: TELLURIDE')]"))
-
-    # # Call the function to select the option from the dropdown
-    # select_option_from_dropdown(driver, dropdown_locator, option_locator)
-
+    driver.execute_script("arguments[0].scrollIntoView();", series_selection)
+    series_selection.click()
+    time.sleep(.2)
 
     show_more_button = wait.until(
         EC.presence_of_element_located((By.CLASS_NAME, 'moreLessText')))
     show_more_button.click()
+    time.sleep(.2)
 
-    # vehicle_status_drop_down = wait.until(
-    #      EC.presence_of_element_located((By.ID,"status")))
-    # vehicle_status_drop_down.click()
-    # vehicle_status = wait.until(
-    #      EC.presence_of_element_located((By.CSS_SELECTOR, 'data-value="DS"')))
-    # vehicle_status.click()
-    print('pass')
-    
+    vehicle_status_drop_down = wait.until(
+         EC.presence_of_element_located((By.ID,"status")))
+    vehicle_status_drop_down.click()
+    time.sleep(.2)
+    vehicle_status = wait.until(
+         EC.presence_of_element_located((By.XPATH, '//li[@class="MuiButtonBase-root MuiMenuItem-root MuiMenuItem-gutters MuiMenuItem-root MuiMenuItem-gutters css-1i5c738" and @data-value="DS"]'))
+        )
+    vehicle_status.click()
+    time.sleep(.1)
+
+    search_button = wait.until(
+        EC.presence_of_element_located((By.XPATH, '//button[@name="search" and @type="button" and contains(@class, "primary-btn")]'))
+        )
+    search_button.click()
+    time.sleep(4)
 except:
-    # driver.quit()
     print('vehicle locator fail')
 
-    
-# Write information to CSV
+# Write table information to CSV
+try:
+    # Find the table element
+    table = driver.find_element(By.XPATH, '//table[@class="table table-responsive-sm"]')
 
-# with open("output.csv", "w", newline="") as csvfile:
-#     writer = csv.writer(csvfile)
-#     writer.writerow(["Header1", "Header2"])  # Write headers if necessary
-#     writer.writerow(['text', "Additional data"])
+    # Find all rows in the table body
+    rows = table.find_elements(By.XPATH,"//tbody/tr")
 
-# Clean up resources
-# driver.quit()s
+    # Create a CSV file and write the table data to it
+    with open("table_data.csv", "w", newline="") as file:
+        writer = csv.writer(file)
+        
+        # Write the table header row
+        header_row = table.find_element(By.XPATH,".//thead/tr")
+        header_data = [th.text for th in header_row.find_elements(By.XPATH,".//th")]
+        writer.writerow(header_data)
+
+        # Write the table body rows
+        for row in rows:
+            row_data = [td.text for td in row.find_elements(By.XPATH,".//td")]
+            writer.writerow(row_data)
+        time.sleep(3)
+        
+except:
+    print('export failed')
+
+
+# driver.quit()
